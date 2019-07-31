@@ -29,6 +29,7 @@ TK TK
 
 -   [Delivery](#delivery)
     -   [Parameters](#parameters)
+    -   [Examples](#examples)
     -   [uploadFile](#uploadfile)
         -   [Parameters](#parameters-1)
     -   [uploadFiles](#uploadfiles)
@@ -59,6 +60,17 @@ an interface with S3.
     -   `options.bucket`  The bucket on S3 to interact with
     -   `options.basePath`  A pre-defined base path for all interactions with S3.
                                 Good for establishing the slug of an upload. (optional, default `''`)
+
+#### Examples
+
+```javascript
+import { Delivery } from '@datadesk/delivery';
+
+const delivery = new Delivery({
+ bucket: 'apps.thebignews.com',
+ basePath: 'our-great-project',
+});
+```
 
 #### uploadFile
 

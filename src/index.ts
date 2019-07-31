@@ -10,6 +10,7 @@ import hasha from 'hasha';
 import mime from 'mime-types';
 
 // local
+import { cacheLookup } from './cache-lookup';
 import { findFiles, resolvePath } from './utils';
 
 type Optional = null | undefined;
@@ -43,6 +44,13 @@ export interface UploadOutput extends Output {
  * @param options.bucket The bucket on S3 to interact with
  * @param options.basePath A pre-defined base path for all interactions with S3.
  *                         Good for establishing the slug of an upload.
+ * @example
+ * import { Delivery } from '@datadesk/delivery';
+ *
+ * const delivery = new Delivery({
+ *  bucket: 'apps.thebignews.com',
+ *  basePath: 'our-great-project',
+ * });
  */
 export class Delivery extends EventEmitter {
   s3: S3;
@@ -116,7 +124,7 @@ export class Delivery extends EventEmitter {
       };
 
       if (shouldCache) {
-        const maxAge = new Map().get(ContentType); // #FIXME
+        const maxAge = cacheLookup.get(ContentType);
 
         if (maxAge) {
           params.CacheControl = maxAge;
