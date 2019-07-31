@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "typebundle src/index.ts --output dist --target 8 --compress",
-    "build-docs": "documentation readme src/index.ts --parse-extension ts --section=API --markdown-toc",
+    "build-docs": "documentation readme src/index.ts --parse-extension ts --section API --markdown-toc --config documentation.yml",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

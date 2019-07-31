@@ -22,12 +22,11 @@ interface Output {
   isIdentical: boolean;
 }
 
-/** what downloadFile and downloadFiles returns. Identical to Output for now. */
+/** What downloadFile and downloadFiles returns. Identical to {@link Output}. */
 export interface DownloadOutput extends Output {}
 
 /**
- * What uploadFile and uploadFiles returns.
- *
+ * What uploadFile and uploadFiles returns. Includes {@link Output}'s fields.
  */
 export interface UploadOutput extends Output {
   /** This file was made public on upload. */
