@@ -13,23 +13,27 @@ import mime from 'mime-types';
 import { cacheLookup } from './cache-lookup';
 import { findFiles, resolvePath } from './utils';
 
+/**
+ * A helper type to cover cases where either nullable is valid.
+ *
+ * @private
+ */
 type Optional = null | undefined;
 
-/** The base output of both downloaded and uploaded files. */
-interface Output {
+/** What downloadFile and downloadFiles returns. */
+export interface DownloadOutput {
   /** The file's path on S3. */
   Key: string;
   /** Whether the file was identical on S3 or locally and was skipped. */
   isIdentical: boolean;
 }
 
-/** What downloadFile and downloadFiles returns. Identical to {@link Output}. */
-export interface DownloadOutput extends Output {}
-
-/**
- * What uploadFile and uploadFiles returns. Includes {@link Output}'s fields.
- */
-export interface UploadOutput extends Output {
+/** What uploadFile and uploadFiles returns. */
+export interface UploadOutput {
+  /** The file's path on S3. */
+  Key: string;
+  /** Whether the file was identical on S3 or locally and was skipped. */
+  isIdentical: boolean;
   /** This file was made public on upload. */
   isPublic: boolean;
   /** The size of the uploaded file in bytes. */
@@ -107,7 +111,7 @@ export class Delivery extends EventEmitter {
     const ACL = isPublic ? 'public-read' : 'private';
 
     // determine the content hash for the file
-    const hash = await hasha.fromStream(Body, { algorithm: 'md5' });
+    const hash = await hasha.fromFile(file, { algorithm: 'md5' });
 
     // we check to see if the file already exists on S3 and if it is identical
     const s3ETag = await this.getS3ObjectETag(Key);
@@ -131,7 +135,11 @@ export class Delivery extends EventEmitter {
         }
       }
 
-      await this.s3.putObject(params).promise();
+      try {
+        await this.s3.putObject(params).promise();
+      } catch (err) {
+        throw err;
+      }
     }
 
     const output: UploadOutput = {
@@ -141,6 +149,10 @@ export class Delivery extends EventEmitter {
       size,
     };
 
+    /**
+     * @event Delivery#upload
+     * @type {UploadOutput}
+     */
     this.emit('upload', output);
 
     return output;
@@ -174,6 +186,7 @@ export class Delivery extends EventEmitter {
       )
     );
 
+    this.emit('upload:all', uploadedFiles);
     return uploadedFiles;
   }
 
@@ -261,6 +274,7 @@ export class Delivery extends EventEmitter {
       );
     }
 
+    this.emit('download:all', downloadedFiles);
     return downloadedFiles;
   }
 
@@ -278,6 +292,7 @@ export class Delivery extends EventEmitter {
 
     try {
       const { ETag } = await this.s3.headObject(params).promise();
+
       return ETag;
     } catch (err) {
       // the file didn't exist and that's fine

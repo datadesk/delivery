@@ -39,13 +39,15 @@ TK TK
     -   [downloadFiles](#downloadfiles)
         -   [Parameters](#parameters-4)
 -   [How outputs are structured](#how-outputs-are-structured)
--   [Output](#output)
+-   [DownloadOutput](#downloadoutput)
     -   [Key](#key)
     -   [isIdentical](#isidentical)
--   [DownloadOutput](#downloadoutput)
 -   [UploadOutput](#uploadoutput)
+    -   [Key](#key-1)
+    -   [isIdentical](#isidentical-1)
     -   [isPublic](#ispublic)
     -   [size](#size)
+-   [Delivery#upload](#deliveryupload)
 
 ### Delivery
 
@@ -123,9 +125,9 @@ Downloads multiple files from a prefix on S3.
 These represent the output objects from Delivery's commands.
 
 
-### Output
+### DownloadOutput
 
-The base output of both downloaded and uploaded files.
+What downloadFile and downloadFiles returns.
 
 #### Key
 
@@ -139,17 +141,21 @@ Whether the file was identical on S3 or locally and was skipped.
 
 Type: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
 
-### DownloadOutput
-
-**Extends Output**
-
-What downloadFile and downloadFiles returns. Identical to [Output](#output).
-
 ### UploadOutput
 
-**Extends Output**
+What uploadFile and uploadFiles returns.
 
-What uploadFile and uploadFiles returns. Includes [Output](#output)'s fields.
+#### Key
+
+The file's path on S3.
+
+Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
+
+#### isIdentical
+
+Whether the file was identical on S3 or locally and was skipped.
+
+Type: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
 
 #### isPublic
 
@@ -162,6 +168,10 @@ Type: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Glob
 The size of the uploaded file in bytes.
 
 Type: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)
+
+### Delivery#upload
+
+Type: [UploadOutput](#uploadoutput)
 
 ## License
 
