@@ -47,7 +47,7 @@ export interface UploadOutput {
  * @param options
  * @param options.bucket The bucket on S3 to interact with
  * @param options.basePath A pre-defined base path for all interactions with S3.
- *                         Good for establishing the slug of an upload.
+ *                         Useful for establishing the slug or prefix of an upload.
  * @example
  * import { Delivery } from '@datadesk/delivery';
  *
@@ -86,6 +86,14 @@ export class Delivery extends EventEmitter {
    * @param options
    * @param options.isPublic Whether a file should be made public or not on upload
    * @param options.shouldCache Whether a file should have cache headers applied
+   * @example
+   * const result = await delivery.uploadFile(
+   *   './data/counties.json', // path to the file on local drive
+   *   'counties.json', // the key to give the file in S3, combined with `basePath`
+   *   {
+   *     isPublic: true,
+   *   }
+   * );
    */
   async uploadFile(
     file: string,
@@ -166,6 +174,14 @@ export class Delivery extends EventEmitter {
    * @param options.prefix The prefix to add to the uploaded file's path
    * @param options.isPublic Whether all files uploaded should be made public
    * @param options.shouldCache Whether all files uploaded should get cache headers
+   * @example
+   * const result = await delivery.uploadFiles(
+   *   './dist/', // path to the directory on local drive to upload
+   *   {
+   *     isPublic: true,
+   *     prefix: 'output', // the key prefix to combine with `basePath`
+   *   }
+   * );
    */
   async uploadFiles(
     dir: string,
@@ -197,6 +213,11 @@ export class Delivery extends EventEmitter {
    * @param dest Where to put the file on the local disk
    * @param options
    * @param options.s3ETag If the ETag from S3 is already known, it can be provided here
+   * @example
+   * const result = await delivery.downloadFile(
+   *   'output/data.json', // key of file on S3 to download
+   *   './downloaded/data.json', // where to download the file to the local drive
+   * );
    */
   async downloadFile(
     path: string,
@@ -246,6 +267,11 @@ export class Delivery extends EventEmitter {
    *
    * @param prefix The prefix to the directory on S3 to download from
    * @param dir Where to put all the files on the local disk
+   * @example
+   * const result = await delivery.downloadFiles(
+   *   'production', // the key of the directory on S3 to download from
+   *   './downloaded/', // where to download the files to the local drive
+   * );
    */
   async downloadFiles(prefix: string, dir: string) {
     const dest = resolvePath(dir);

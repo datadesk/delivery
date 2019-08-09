@@ -32,12 +32,16 @@ TK TK
     -   [Examples](#examples)
     -   [uploadFile](#uploadfile)
         -   [Parameters](#parameters-1)
+        -   [Examples](#examples-1)
     -   [uploadFiles](#uploadfiles)
         -   [Parameters](#parameters-2)
+        -   [Examples](#examples-2)
     -   [downloadFile](#downloadfile)
         -   [Parameters](#parameters-3)
+        -   [Examples](#examples-3)
     -   [downloadFiles](#downloadfiles)
         -   [Parameters](#parameters-4)
+        -   [Examples](#examples-4)
 -   [How outputs are structured](#how-outputs-are-structured)
 -   [DownloadOutput](#downloadoutput)
     -   [Key](#key)
@@ -61,7 +65,7 @@ an interface with S3.
 -   `options` **{bucket: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), basePath: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)}** 
     -   `options.bucket`  The bucket on S3 to interact with
     -   `options.basePath`  A pre-defined base path for all interactions with S3.
-                                Good for establishing the slug of an upload. (optional, default `''`)
+                                Useful for establishing the slug or prefix of an upload. (optional, default `''`)
 
 #### Examples
 
@@ -86,6 +90,18 @@ Uploads a single file to S3.
     -   `options.isPublic`  Whether a file should be made public or not on upload (optional, default `false`)
     -   `options.shouldCache`  Whether a file should have cache headers applied (optional, default `false`)
 
+##### Examples
+
+```javascript
+const result = await delivery.uploadFile(
+  './data/counties.json', // path to the file on local drive
+  'counties.json', // the key to give the file in S3, combined with `basePath`
+  {
+    isPublic: true,
+  }
+);
+```
+
 Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[UploadOutput](#uploadoutput)>** 
 
 #### uploadFiles
@@ -100,6 +116,18 @@ Upload a directory of files to S3.
     -   `options.isPublic`  Whether all files uploaded should be made public (optional, default `false`)
     -   `options.shouldCache`  Whether all files uploaded should get cache headers (optional, default `false`)
 
+##### Examples
+
+```javascript
+const result = await delivery.uploadFiles(
+  './dist/', // path to the directory on local drive to upload
+  {
+    isPublic: true,
+    prefix: 'output', // the key prefix to combine with `basePath`
+  }
+);
+```
+
 #### downloadFile
 
 Downloads a file from S3 to the local disk.
@@ -111,6 +139,15 @@ Downloads a file from S3 to the local disk.
 -   `options` **{s3ETag: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?}**  (optional, default `{}`)
     -   `options.s3ETag`  If the ETag from S3 is already known, it can be provided here
 
+##### Examples
+
+```javascript
+const result = await delivery.downloadFile(
+  'output/data.json', // key of file on S3 to download
+  './downloaded/data.json', // where to download the file to the local drive
+);
+```
+
 #### downloadFiles
 
 Downloads multiple files from a prefix on S3.
@@ -119,6 +156,15 @@ Downloads multiple files from a prefix on S3.
 
 -   `prefix` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The prefix to the directory on S3 to download from
 -   `dir` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Where to put all the files on the local disk
+
+##### Examples
+
+```javascript
+const result = await delivery.downloadFiles(
+  'production', // the key of the directory on S3 to download from
+  './downloaded/', // where to download the files to the local drive
+);
+```
 
 ### How outputs are structured
 
