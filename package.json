@@ -1,6 +1,6 @@
 {
   "name": "@datadesk/delivery",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Push and pull assets to and from S3 the Data Desk way.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
