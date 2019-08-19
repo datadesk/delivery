@@ -49,8 +49,6 @@ export interface UploadOutput {
  * @param options.basePath A pre-defined base path for all interactions with S3.
  *                         Useful for establishing the slug or prefix of an upload.
  * @example
- * import { Delivery } from '@datadesk/delivery';
- *
  * const delivery = new Delivery({
  *  bucket: 'apps.thebignews.com',
  *  basePath: 'our-great-project',

@@ -70,8 +70,6 @@ an interface with S3.
 #### Examples
 
 ```javascript
-import { Delivery } from '@datadesk/delivery';
-
 const delivery = new Delivery({
  bucket: 'apps.thebignews.com',
  basePath: 'our-great-project',
