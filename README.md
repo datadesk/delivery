@@ -1,20 +1,20 @@
 <h1 align="center">
-  @datadesk/delivery
+  @datagraphics/delivery
 </h1>
 <p align="center">
-  <a href="https://www.npmjs.org/package/@datadesk/delivery"><img src="https://badgen.net/npm/v/@datadesk/delivery" alt="npm"></a>
+  <a href="https://www.npmjs.org/package/@datagraphics/delivery"><img src="https://badgen.net/npm/v/@datagraphics/delivery" alt="npm"></a>
   <a href="https://david-dm.org/datadesk/delivery"><img src="https://badgen.net/david/dep/datadesk/delivery" alt="dependencies"></a>
-  <a href="https://packagephobia.now.sh/result?p=@datadesk/delivery"><img src="https://badgen.net/packagephobia/install/@datadesk/delivery" alt="install size"></a>
+  <a href="https://packagephobia.now.sh/result?p=@datagraphics/delivery"><img src="https://badgen.net/packagephobia/install/@datagraphics/delivery" alt="install size"></a>
 </p>
 
-`@datadesk/delivery` is a way to push and pull assets to and from S3 the Data Desk way!
+`@datagraphics/delivery` is a way to push and pull assets to and from S3 the Data Graphics way!
 
 ## Installation
 
-`@datadesk/delivery` is available via `npm`.
+`@datagraphics/delivery` is available via `npm`.
 
 ```sh
-npm install -D @datadesk/delivery
+npm install -D @datagraphics/delivery
 ```
 
 ## Usage
@@ -57,7 +57,7 @@ TK TK
 
 **Extends EventEmitter**
 
-The base class for @datadesk/delivery. Create an instance of Delivery to set
+The base class for @datagraphics/delivery. Create an instance of Delivery to set
 an interface with S3.
 
 #### Parameters

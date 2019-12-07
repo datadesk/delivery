@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2019-12-06
+
+### Added
+
+- **Font files** (`.woff2`, `.woff`, `.ttf`, `.otf`) now receive cache headers.
+
+### Changed
+
+- JSON files are now cached for **one hour**.
+- Images are now cached for **one year**.
+- Minimum Node.js support is now `v10`. It may still work on `v8`, but no promises.
+- This package is now available on `npm` as `@datagraphics/delivery` instead of `@datadesk/delivery`, which has been deprecated.
+
 ## [0.1.0] - 2019-08-19
 
 ### Added

@@ -41,7 +41,7 @@ export interface UploadOutput {
 }
 
 /**
- * The base class for @datadesk/delivery. Create an instance of Delivery to set
+ * The base class for @datagraphics/delivery. Create an instance of Delivery to set
  * an interface with S3.
  *
  * @param options

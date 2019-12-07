@@ -1,7 +1,7 @@
 {
-  "name": "@datadesk/delivery",
+  "name": "@datagraphics/delivery",
   "version": "0.1.0",
-  "description": "Push and pull assets to and from S3 the Data Desk way.",
+  "description": "Push and pull assets to and from S3 the Data Graphics way.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
