@@ -1,7 +1,5 @@
 const oneMinute = 'max-age=60';
-const fiveMinutes = 'max-age=300';
 const oneHour = 'max-age=3600';
-const oneWeek = 'max-age=604800';
 const oneYear = 'max-age=31536000';
 
 export const cacheLookup = new Map<string, string>();
@@ -14,11 +12,17 @@ cacheLookup.set('text/css', oneYear);
 cacheLookup.set('application/javascript', oneYear);
 
 // images
-cacheLookup.set('image/gif', oneWeek);
-cacheLookup.set('image/jpeg', oneWeek);
-cacheLookup.set('image/png', oneWeek);
-cacheLookup.set('image/svg+xml', oneWeek);
-cacheLookup.set('image/webp', oneWeek);
+cacheLookup.set('image/gif', oneYear);
+cacheLookup.set('image/jpeg', oneYear);
+cacheLookup.set('image/png', oneYear);
+cacheLookup.set('image/svg+xml', oneYear);
+cacheLookup.set('image/webp', oneYear);
+
+// fonts
+cacheLookup.set('font/woff2', oneYear);
+cacheLookup.set('font/woff', oneYear);
+cacheLookup.set('font/ttf', oneYear);
+cacheLookup.set('font/otf', oneYear);
 
 // JSON
-cacheLookup.set('application/json', fiveMinutes);
+cacheLookup.set('application/json', oneHour);
