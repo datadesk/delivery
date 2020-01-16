@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2020-01-16
+
+### Added
+
+- **Video files** (`.mp4`, `.webm`) now receive cache headers.
+
 ## [0.2.0] - 2019-12-06
 
 ### Added
