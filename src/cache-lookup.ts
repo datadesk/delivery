@@ -24,5 +24,9 @@ cacheLookup.set('font/woff', oneYear);
 cacheLookup.set('font/ttf', oneYear);
 cacheLookup.set('font/otf', oneYear);
 
+// videos
+cacheLookup.set('video/mp4', oneYear);
+cacheLookup.set('video/webm', oneYear);
+
 // JSON
 cacheLookup.set('application/json', oneHour);
