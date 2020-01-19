@@ -59,7 +59,15 @@ export class Delivery extends EventEmitter {
   bucket: string;
   basePath: string;
 
-  constructor({ bucket, basePath = '' }: { bucket: string; basePath: string }) {
+  constructor({
+    bucket,
+    basePath = '',
+    useAccelerateEndpoint = false,
+  }: {
+    bucket: string;
+    basePath: string;
+    useAccelerateEndpoint: boolean;
+  }) {
     super();
 
     // instantiate the s3 instance
@@ -70,6 +78,7 @@ export class Delivery extends EventEmitter {
           maxSockets: 50,
         }),
       },
+      useAccelerateEndpoint,
     });
 
     this.bucket = bucket;
