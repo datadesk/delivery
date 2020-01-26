@@ -48,6 +48,7 @@ export interface UploadOutput {
  * @param options.bucket The bucket on S3 to interact with
  * @param options.basePath A pre-defined base path for all interactions with S3.
  *                         Useful for establishing the slug or prefix of an upload.
+ * @param options.useAccelerateEndpoint If true, use the Accelerate endpoint
  * @example
  * const delivery = new Delivery({
  *  bucket: 'apps.thebignews.com',
