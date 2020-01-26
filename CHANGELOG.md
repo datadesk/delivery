@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2020-01-26
+
+### Added
+
+- Added flag for using the [Accelerate endpoint with S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html). `useAccelerateEndpoint` can now be passed when initializing the `Delivery` class. It will depend on the S3 bucket already having it active, however.
+
 ## [0.3.0] - 2020-01-16
 
 ### Added
