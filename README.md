@@ -62,10 +62,11 @@ an interface with S3.
 
 #### Parameters
 
--   `options` **{bucket: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), basePath: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)}** 
+-   `options` **{bucket: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), basePath: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), useAccelerateEndpoint: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)}** 
     -   `options.bucket`  The bucket on S3 to interact with
     -   `options.basePath`  A pre-defined base path for all interactions with S3.
                                 Useful for establishing the slug or prefix of an upload. (optional, default `''`)
+    -   `options.useAccelerateEndpoint`  If true, use the Accelerate endpoint (optional, default `false`)
 
 #### Examples
 
