@@ -39,7 +39,7 @@
     "documentation": "^13.0.0",
     "np": "^6.0.0",
     "prettier": "^1.18.2",
-    "typebundle": "^0.7.0"
+    "typebundle": "^0.11.0"
   },
   "prettier": "@datadesk/prettier-config"
 }
