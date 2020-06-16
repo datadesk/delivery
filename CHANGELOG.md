@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2020-06-16
+
+### Added
+
+- Added the ability to pass a `maxAgeOverride` parameter to `uploadFile` and `uploadFiles`. If `shouldCache` is `true` and `maxAgeOverride` is provided, the upload functions will use this value instead to set the cache control header.
+
 ## [0.4.0] - 2020-01-26
 
 ### Added

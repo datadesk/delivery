@@ -1,8 +1,8 @@
-const oneMinute = 'max-age=60';
-const oneHour = 'max-age=3600';
-const oneYear = 'max-age=31536000';
+const oneMinute = 60;
+const oneHour = 3600;
+const oneYear = 31536000;
 
-export const cacheLookup = new Map<string, string>();
+export const cacheLookup = new Map<string, number>();
 
 // HTML
 cacheLookup.set('text/html', oneMinute);

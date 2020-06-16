@@ -1,17 +1,17 @@
 // native
 import { EventEmitter } from 'events';
+import { createReadStream, promises as fs } from 'fs';
 import { Agent } from 'https';
 import { join, relative } from 'path';
 
 // packages
 import S3 from 'aws-sdk/clients/s3';
-import fs from 'fs-extra';
 import hasha from 'hasha';
 import mime from 'mime-types';
 
 // local
 import { cacheLookup } from './cache-lookup';
-import { findFiles, resolvePath } from './utils';
+import { findFiles, outputFile, resolvePath } from './utils';
 
 /**
  * A helper type to cover cases where either nullable is valid.
@@ -56,9 +56,9 @@ export interface UploadOutput {
  * });
  */
 export class Delivery extends EventEmitter {
-  s3: S3;
-  bucket: string;
-  basePath: string;
+  declare s3: S3;
+  declare bucket: string;
+  declare basePath: string;
 
   constructor({
     bucket,
@@ -94,6 +94,9 @@ export class Delivery extends EventEmitter {
    * @param options
    * @param options.isPublic Whether a file should be made public or not on upload
    * @param options.shouldCache Whether a file should have cache headers applied
+   * @param options.maxAgeOverride A custom max-age value (in seconds) that will
+   *                               override the built-in lookup if shouldCache
+   *                               is true
    * @example
    * const result = await delivery.uploadFile(
    *   './data/counties.json', // path to the file on local drive
@@ -109,13 +112,18 @@ export class Delivery extends EventEmitter {
     {
       isPublic = false,
       shouldCache = false,
-    }: { isPublic?: boolean; shouldCache?: boolean } = {}
+      maxAgeOverride,
+    }: {
+      isPublic?: boolean;
+      shouldCache?: boolean;
+      maxAgeOverride?: number;
+    } = {}
   ): Promise<UploadOutput> {
     // prepare the Key to the file on S3
     const Key = join(this.basePath, path);
 
-    // get read to read the file's as a stream
-    const Body = fs.createReadStream(file);
+    // get ready to read the file as a stream
+    const Body = createReadStream(file);
 
     // grab the size of the file
     const { size } = await fs.stat(file);
@@ -144,10 +152,12 @@ export class Delivery extends EventEmitter {
       };
 
       if (shouldCache) {
-        const maxAge = cacheLookup.get(ContentType);
+        const maxAge = maxAgeOverride
+          ? maxAgeOverride
+          : cacheLookup.get(ContentType);
 
         if (maxAge) {
-          params.CacheControl = maxAge;
+          params.CacheControl = `max-age=${maxAge}`;
         }
       }
 
@@ -182,6 +192,9 @@ export class Delivery extends EventEmitter {
    * @param options.prefix The prefix to add to the uploaded file's path
    * @param options.isPublic Whether all files uploaded should be made public
    * @param options.shouldCache Whether all files uploaded should get cache headers
+   * @param options.maxAgeOverride A custom max-age value (in seconds) that will
+   *                               override the built-in lookup if shouldCache
+   *                               is true
    * @example
    * const result = await delivery.uploadFiles(
    *   './dist/', // path to the directory on local drive to upload
@@ -197,7 +210,13 @@ export class Delivery extends EventEmitter {
       prefix = '',
       isPublic = false,
       shouldCache = false,
-    }: { prefix?: string; isPublic?: boolean; shouldCache?: boolean } = {}
+      maxAgeOverride,
+    }: {
+      prefix?: string;
+      isPublic?: boolean;
+      shouldCache?: boolean;
+      maxAgeOverride?: number;
+    } = {}
   ) {
     const files = await findFiles(dir);
 
@@ -206,6 +225,7 @@ export class Delivery extends EventEmitter {
         this.uploadFile(file, join(prefix, dest), {
           isPublic,
           shouldCache,
+          maxAgeOverride,
         })
       )
     );
@@ -261,7 +281,7 @@ export class Delivery extends EventEmitter {
       };
 
       const data = await this.s3.getObject(params).promise();
-      await fs.outputFile(dest, data.Body);
+      await outputFile(dest, data.Body);
     }
 
     const output: DownloadOutput = { Key, isIdentical };
@@ -293,7 +313,7 @@ export class Delivery extends EventEmitter {
 
     if (Contents) {
       await Promise.all(
-        Contents.map(async obj => {
+        Contents.map(async (obj) => {
           if (obj.Key == null) return;
 
           const Key = relative(this.basePath, obj.Key);
