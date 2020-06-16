@@ -85,9 +85,12 @@ Uploads a single file to S3.
 
 -   `file` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The path to the file to upload
 -   `path` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Where to upload the file relative to the base path
--   `options` **{isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?}**  (optional, default `{}`)
+-   `options` **{isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, maxAgeOverride: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?}**  (optional, default `{}`)
     -   `options.isPublic`  Whether a file should be made public or not on upload (optional, default `false`)
     -   `options.shouldCache`  Whether a file should have cache headers applied (optional, default `false`)
+    -   `options.maxAgeOverride`  A custom max-age value (in seconds) that will
+                                      override the built-in lookup if shouldCache
+                                      is true
 
 ##### Examples
 
@@ -110,10 +113,13 @@ Upload a directory of files to S3.
 ##### Parameters
 
 -   `dir` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The directory to upload to S3
--   `options` **{prefix: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?, isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?}**  (optional, default `{}`)
+-   `options` **{prefix: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?, isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, maxAgeOverride: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?}**  (optional, default `{}`)
     -   `options.prefix`  The prefix to add to the uploaded file's path (optional, default `''`)
     -   `options.isPublic`  Whether all files uploaded should be made public (optional, default `false`)
     -   `options.shouldCache`  Whether all files uploaded should get cache headers (optional, default `false`)
+    -   `options.maxAgeOverride`  A custom max-age value (in seconds) that will
+                                      override the built-in lookup if shouldCache
+                                      is true
 
 ##### Examples
 

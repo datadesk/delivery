@@ -1,5 +1,6 @@
 // native
-import { relative, resolve } from 'path';
+import { promises as fs } from 'fs';
+import { dirname, relative, resolve } from 'path';
 
 // packages
 import glob from 'fast-glob';
@@ -34,4 +35,19 @@ export async function findFiles(dir: string) {
 
     return { file, dest };
   });
+}
+
+export async function outputFile(dest: string, data: any) {
+  // get the file's directory
+  const dir = dirname(dest);
+
+  // ensure the directory exists
+  await fs.mkdir(dir, { recursive: true });
+
+  // attempt to write the file
+  try {
+    await fs.writeFile(dest, data);
+  } catch (e) {
+    throw e;
+  }
 }
