@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Delivery` can now be passed a `shouldBeCached` function to customize the logic that selects files to receive long-lived cache headers. This function is passed a single parameter — the input file path — and should return `true` or `false`.
+- `.topojson` files will now get the content header of `application/json` thanks to a custom type addition to `mime`.
+
+### Changed
+
+- Delivery now uses `mime` instead of `mime-types`. It's smaller and makes it easy to add custom types.
+- `maxAgeOverride` is now `cacheControlOverride` and expects you to provide the full string, not just the seconds for `max-age=`.
+- The logic for what gets a long-lived cache header is no longer entirely based on content type and instead decided by whether a file shows signs of being hashed. By default this is a regular expression check looking for an eight-character [hexadecimal](https://en.wikipedia.org/wiki/Hexadecimal) hash in the filename. Filenames that pass this test will receive a `public, max-age=31536000, immutable` value. Files that match the `text/html` content type will instead get an explicit `no-cache` header. Files that do not pass either test get nothing and are at the mercy of upstream decisions.
+
 ## [0.5.0] - 2020-06-16
 
 ### Added

@@ -7,11 +7,17 @@ import { join, relative } from 'path';
 // packages
 import S3 from 'aws-sdk/clients/s3';
 import hasha from 'hasha';
-import mime from 'mime-types';
+import mime from 'mime';
 
 // local
-import { cacheLookup } from './cache-lookup';
-import { findFiles, outputFile, resolvePath } from './utils';
+import { longLiveCache, requireRevalidation } from './cache-headers';
+import {
+  customTypeMap,
+  defaultShouldBeCached,
+  findFiles,
+  outputFile,
+  resolvePath,
+} from './utils';
 
 /**
  * A helper type to cover cases where either nullable is valid.
@@ -40,6 +46,9 @@ export interface UploadOutput {
   size: number;
 }
 
+// add some custom extensions to mime library
+mime.define(customTypeMap);
+
 /**
  * The base class for @datagraphics/delivery. Create an instance of Delivery to set
  * an interface with S3.
@@ -49,6 +58,8 @@ export interface UploadOutput {
  * @param options.basePath A pre-defined base path for all interactions with S3.
  *                         Useful for establishing the slug or prefix of an upload.
  * @param options.useAccelerateEndpoint If true, use the Accelerate endpoint
+ * @param options.shouldBeCached A function used to determine whether a file
+ *                               should receive long-lived cache headers.
  * @example
  * const delivery = new Delivery({
  *  bucket: 'apps.thebignews.com',
@@ -59,15 +70,18 @@ export class Delivery extends EventEmitter {
   declare s3: S3;
   declare bucket: string;
   declare basePath: string;
+  declare shouldBeCached: (path: string) => boolean;
 
   constructor({
     bucket,
     basePath = '',
     useAccelerateEndpoint = false,
+    shouldBeCached = defaultShouldBeCached,
   }: {
     bucket: string;
-    basePath: string;
-    useAccelerateEndpoint: boolean;
+    basePath?: string;
+    useAccelerateEndpoint?: boolean;
+    shouldBeCached?: (path: string) => boolean;
   }) {
     super();
 
@@ -84,6 +98,7 @@ export class Delivery extends EventEmitter {
 
     this.bucket = bucket;
     this.basePath = basePath;
+    this.shouldBeCached = shouldBeCached;
   }
 
   /**
@@ -94,9 +109,9 @@ export class Delivery extends EventEmitter {
    * @param options
    * @param options.isPublic Whether a file should be made public or not on upload
    * @param options.shouldCache Whether a file should have cache headers applied
-   * @param options.maxAgeOverride A custom max-age value (in seconds) that will
-   *                               override the built-in lookup if shouldCache
-   *                               is true
+   * @param options.cacheControlOverride A custom Cache-Control value that will
+   *                                     override the built-in lookup if
+   *                                     shouldCache is true
    * @example
    * const result = await delivery.uploadFile(
    *   './data/counties.json', // path to the file on local drive
@@ -112,11 +127,11 @@ export class Delivery extends EventEmitter {
     {
       isPublic = false,
       shouldCache = false,
-      maxAgeOverride,
+      cacheControlOverride,
     }: {
       isPublic?: boolean;
       shouldCache?: boolean;
-      maxAgeOverride?: number;
+      cacheControlOverride?: string;
     } = {}
   ): Promise<UploadOutput> {
     // prepare the Key to the file on S3
@@ -129,7 +144,7 @@ export class Delivery extends EventEmitter {
     const { size } = await fs.stat(file);
 
     // determine the content type of the file
-    const ContentType = mime.lookup(file) || 'application/octet-stream';
+    const ContentType = mime.getType(file) || 'application/octet-stream';
 
     // decide whether it should be a public file or not
     const ACL = isPublic ? 'public-read' : 'private';
@@ -152,12 +167,16 @@ export class Delivery extends EventEmitter {
       };
 
       if (shouldCache) {
-        const maxAge = maxAgeOverride
-          ? maxAgeOverride
-          : cacheLookup.get(ContentType);
-
-        if (maxAge) {
-          params.CacheControl = `max-age=${maxAge}`;
+        // we received a custom override
+        if (cacheControlOverride) {
+          params.CacheControl = cacheControlOverride;
+        } else {
+          // otherwise figure it out
+          if (ContentType === 'text/html') {
+            params.CacheControl = requireRevalidation;
+          } else if (this.shouldBeCached(path)) {
+            params.CacheControl = longLiveCache;
+          }
         }
       }
 
@@ -192,9 +211,9 @@ export class Delivery extends EventEmitter {
    * @param options.prefix The prefix to add to the uploaded file's path
    * @param options.isPublic Whether all files uploaded should be made public
    * @param options.shouldCache Whether all files uploaded should get cache headers
-   * @param options.maxAgeOverride A custom max-age value (in seconds) that will
-   *                               override the built-in lookup if shouldCache
-   *                               is true
+   * @param options.cacheControlOverride A custom Cache-Control value that will
+   *                                     override the built-in lookup if
+   *                                     shouldCache is true
    * @example
    * const result = await delivery.uploadFiles(
    *   './dist/', // path to the directory on local drive to upload
@@ -210,12 +229,12 @@ export class Delivery extends EventEmitter {
       prefix = '',
       isPublic = false,
       shouldCache = false,
-      maxAgeOverride,
+      cacheControlOverride,
     }: {
       prefix?: string;
       isPublic?: boolean;
       shouldCache?: boolean;
-      maxAgeOverride?: number;
+      cacheControlOverride?: string;
     } = {}
   ) {
     const files = await findFiles(dir);
@@ -225,7 +244,7 @@ export class Delivery extends EventEmitter {
         this.uploadFile(file, join(prefix, dest), {
           isPublic,
           shouldCache,
-          maxAgeOverride,
+          cacheControlOverride,
         })
       )
     );

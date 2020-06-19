@@ -5,6 +5,9 @@ import { dirname, relative, resolve } from 'path';
 // packages
 import glob from 'fast-glob';
 
+// types
+import type { TypeMap } from 'mime';
+
 /**
  * Resolves a path relative to the current working directory.
  *
@@ -30,7 +33,7 @@ export async function findFiles(dir: string) {
     cwd: dir,
   });
 
-  return files.map(file => {
+  return files.map((file) => {
     const dest = relative(resolvedDir, file);
 
     return { file, dest };
@@ -51,3 +54,29 @@ export async function outputFile(dest: string, data: any) {
     throw e;
   }
 }
+
+/**
+ * A pre-compiled regex for determining if a filename contains an 8-character
+ * hexadecimal string. This is typically a sign this file has been hashed.
+ *
+ * @private
+ */
+const hashRegExp = new RegExp('\\.[0-9a-f]{8}\\.');
+
+/**
+ * The default function delivery uses to determine if a file should receive
+ * cache headers.
+ *
+ * @private
+ * @param path The input path
+ */
+export function defaultShouldBeCached(path: string) {
+  return hashRegExp.test(path);
+}
+
+/**
+ * A custom TypeMap to be passed to the mime library to account for topojson files.
+ *
+ * @private
+ */
+export const customTypeMap: TypeMap = { 'application/json': ['topojson'] };
