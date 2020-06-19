@@ -1,5 +1,6 @@
 // native
-import { promises as fs } from 'fs';
+import { createHash } from 'crypto';
+import { createReadStream, promises as fs } from 'fs';
 import { dirname, relative, resolve } from 'path';
 
 // packages
@@ -53,6 +54,27 @@ export async function outputFile(dest: string, data: any) {
   } catch (e) {
     throw e;
   }
+}
+
+/**
+ * Takes the path to a file and calculates its md5.
+ *
+ * @private
+ * @param path The path to a file
+ */
+export function md5FromFile(path: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const input = createReadStream(path);
+    const hash = createHash('md5').setEncoding('hex');
+
+    input
+      .on('error', reject)
+      .pipe(hash)
+      .on('error', reject)
+      .on('finish', () => {
+        resolve(hash.read());
+      });
+  });
 }
 
 /**

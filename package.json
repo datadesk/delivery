@@ -28,7 +28,6 @@
   "dependencies": {
     "aws-sdk": "^2.700.0",
     "fast-glob": "^3.2.4",
-    "hasha": "^5.0.0",
     "mime": "^2.4.6"
   },
   "devDependencies": {

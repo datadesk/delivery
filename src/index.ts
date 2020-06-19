@@ -6,7 +6,6 @@ import { join, relative } from 'path';
 
 // packages
 import S3 from 'aws-sdk/clients/s3';
-import hasha from 'hasha';
 import mime from 'mime';
 
 // local
@@ -15,6 +14,7 @@ import {
   customTypeMap,
   defaultShouldBeCached,
   findFiles,
+  md5FromFile,
   outputFile,
   resolvePath,
 } from './utils';
@@ -36,6 +36,8 @@ export interface DownloadOutput {
 
 /** What uploadFile and uploadFiles returns. */
 export interface UploadOutput {
+  /** The file's ETag. */
+  ETag: string;
   /** The file's path on S3. */
   Key: string;
   /** Whether the file was identical on S3 or locally and was skipped. */
@@ -150,11 +152,11 @@ export class Delivery extends EventEmitter {
     const ACL = isPublic ? 'public-read' : 'private';
 
     // determine the content hash for the file
-    const hash = await hasha.fromFile(file, { algorithm: 'md5' });
+    const ETag = await md5FromFile(file);
 
     // we check to see if the file already exists on S3 and if it is identical
     const s3ETag = await this.getS3ObjectETag(Key);
-    const isIdentical = this.isFileIdenticaltoS3File(hash, s3ETag);
+    const isIdentical = this.isFileIdenticaltoS3File(ETag, s3ETag);
 
     // if they were the same, no need to upload
     if (!isIdentical) {
@@ -188,6 +190,7 @@ export class Delivery extends EventEmitter {
     }
 
     const output: UploadOutput = {
+      ETag,
       Key,
       isIdentical,
       isPublic,
@@ -282,7 +285,7 @@ export class Delivery extends EventEmitter {
     let isIdentical;
 
     try {
-      const hash = await hasha.fromFile(dest, { algorithm: 'md5' });
+      const hash = await md5FromFile(dest);
       isIdentical = this.isFileIdenticaltoS3File(hash, s3ETag);
     } catch (err) {
       // the file doesn't exist locally, and that's fine

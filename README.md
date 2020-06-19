@@ -47,6 +47,7 @@ TK TK
     -   [Key](#key)
     -   [isIdentical](#isidentical)
 -   [UploadOutput](#uploadoutput)
+    -   [ETag](#etag)
     -   [Key](#key-1)
     -   [isIdentical](#isidentical-1)
     -   [isPublic](#ispublic)
@@ -62,11 +63,13 @@ an interface with S3.
 
 #### Parameters
 
--   `options` **{bucket: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), basePath: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), useAccelerateEndpoint: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)}** 
+-   `options` **{bucket: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), basePath: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?, useAccelerateEndpoint: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldBeCached: function (path: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)): [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?}** 
     -   `options.bucket`  The bucket on S3 to interact with
     -   `options.basePath`  A pre-defined base path for all interactions with S3.
                                 Useful for establishing the slug or prefix of an upload. (optional, default `''`)
     -   `options.useAccelerateEndpoint`  If true, use the Accelerate endpoint (optional, default `false`)
+    -   `options.shouldBeCached`  A function used to determine whether a file
+                                      should receive long-lived cache headers. (optional, default `defaultShouldBeCached`)
 
 #### Examples
 
@@ -85,12 +88,12 @@ Uploads a single file to S3.
 
 -   `file` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The path to the file to upload
 -   `path` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Where to upload the file relative to the base path
--   `options` **{isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, maxAgeOverride: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?}**  (optional, default `{}`)
+-   `options` **{isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, cacheControlOverride: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?}**  (optional, default `{}`)
     -   `options.isPublic`  Whether a file should be made public or not on upload (optional, default `false`)
     -   `options.shouldCache`  Whether a file should have cache headers applied (optional, default `false`)
-    -   `options.maxAgeOverride`  A custom max-age value (in seconds) that will
-                                      override the built-in lookup if shouldCache
-                                      is true
+    -   `options.cacheControlOverride`  A custom Cache-Control value that will
+                                            override the built-in lookup if
+                                            shouldCache is true
 
 ##### Examples
 
@@ -113,13 +116,13 @@ Upload a directory of files to S3.
 ##### Parameters
 
 -   `dir` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The directory to upload to S3
--   `options` **{prefix: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?, isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, maxAgeOverride: [number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?}**  (optional, default `{}`)
+-   `options` **{prefix: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?, isPublic: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, shouldCache: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?, cacheControlOverride: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?}**  (optional, default `{}`)
     -   `options.prefix`  The prefix to add to the uploaded file's path (optional, default `''`)
     -   `options.isPublic`  Whether all files uploaded should be made public (optional, default `false`)
     -   `options.shouldCache`  Whether all files uploaded should get cache headers (optional, default `false`)
-    -   `options.maxAgeOverride`  A custom max-age value (in seconds) that will
-                                      override the built-in lookup if shouldCache
-                                      is true
+    -   `options.cacheControlOverride`  A custom Cache-Control value that will
+                                            override the built-in lookup if
+                                            shouldCache is true
 
 ##### Examples
 
@@ -195,6 +198,12 @@ Type: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Glob
 ### UploadOutput
 
 What uploadFile and uploadFiles returns.
+
+#### ETag
+
+The file's ETag.
+
+Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
 
 #### Key
 
