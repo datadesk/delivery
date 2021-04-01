@@ -1,6 +1,6 @@
 /**
  * This Cache-Control header will require browsers to validate with browsers
- * on each request. Good for HTML and data files.
+ * on each request. Good for HTML.
  *
  * @private
  */

@@ -72,7 +72,6 @@ mime.define(customTypeMap);
  *
  * @param options
  * @param options.bucket The bucket on S3 to interact with
- * @param options.region The region the S3 bucket was created in
  * @param options.basePath A pre-defined base path for all interactions with S3.
  *                         Useful for establishing the slug or prefix of an upload.
  * @param options.useAccelerateEndpoint If true, use the Accelerate endpoint
@@ -192,9 +191,12 @@ export class Delivery extends EventEmitter {
         if (cacheControlOverride) {
           params.CacheControl = cacheControlOverride;
         } else {
-          params.CacheControl = this.shouldBeCached(path)
-            ? longLiveCache
-            : requireRevalidation;
+          // otherwise figure it out
+          if (ContentType === 'text/html') {
+            params.CacheControl = requireRevalidation;
+          } else if (this.shouldBeCached(path)) {
+            params.CacheControl = longLiveCache;
+          }
         }
       }
 
@@ -426,7 +428,7 @@ export class Delivery extends EventEmitter {
    * @private
    * @param prefix The prefix to the directory on S3 to list objects in
    */
-  private async *listObjects(prefix: string) {
+  async *listObjects(prefix: string) {
     const Prefix = join(this.basePath, prefix);
 
     const config: S3PaginationConfiguration = { client: this.s3 };

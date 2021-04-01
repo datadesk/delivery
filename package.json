@@ -4,8 +4,11 @@
   "description": "Push and pull assets to and from S3 the Data Graphics way.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "typebundle src/index.ts --output dist --target 10 --compress",
+    "build": "typebundle src/index.ts --output dist --target node12",
     "build-docs": "documentation readme src/index.ts --parse-extension ts --section API --markdown-toc --config documentation.yml",
     "prepublishOnly": "npm run build && npm run build-docs",
     "release": "np --no-yarn --no-tests"
@@ -25,16 +28,14 @@
     "url": "https://github.com/datadesk/delivery/issues"
   },
   "homepage": "https://github.com/datadesk/delivery#readme",
-  "dependencies": {
-    "aws-sdk": "^2.700.0",
-    "fast-glob": "^3.2.4",
-    "mime": "^2.4.6"
-  },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.10.0",
     "@datagraphics/prettier-config": "^2.0.0",
     "@types/mime": "^2.0.2",
-    "@types/node": "^14.0.13",
-    "documentation": "^13.0.1",
+    "@types/node": "^14.14.37",
+    "documentation": "^13.2.0",
+    "fast-glob": "^3.2.5",
+    "mime": "^2.5.2",
     "np": "^7.0.0",
     "prettier": "^2.0.5",
     "typebundle": "^0.12.0"
