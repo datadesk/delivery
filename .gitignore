@@ -88,4 +88,5 @@ typings/
 .dynamodb/
 
 # The compiled directory
-dist
+temp
+lib
