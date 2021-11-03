@@ -28,7 +28,7 @@
   "dependencies": {
     "aws-sdk": "^2.700.0",
     "fast-glob": "^3.2.4",
-    "mime": "^2.4.6"
+    "mime": "^3.0.0"
   },
   "devDependencies": {
     "@datagraphics/prettier-config": "^2.0.0",
