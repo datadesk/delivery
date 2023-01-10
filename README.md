@@ -1,11 +1,4 @@
-<h1 align="center">
-  @datagraphics/delivery
-</h1>
-<p align="center">
-  <a href="https://www.npmjs.org/package/@datagraphics/delivery"><img src="https://badgen.net/npm/v/@datagraphics/delivery" alt="npm"></a>
-  <a href="https://david-dm.org/datadesk/delivery"><img src="https://badgen.net/david/dep/datadesk/delivery" alt="dependencies"></a>
-  <a href="https://packagephobia.now.sh/result?p=@datagraphics/delivery"><img src="https://badgen.net/packagephobia/install/@datagraphics/delivery" alt="install size"></a>
-</p>
+# @datagraphics/delivery
 
 `@datagraphics/delivery` is a way to push and pull assets to and from S3 the Data Graphics way!
 
@@ -16,10 +9,6 @@
 ```sh
 npm install -D @datagraphics/delivery
 ```
-
-## Usage
-
-TK TK
 
 ## API
 
